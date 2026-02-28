@@ -1,0 +1,37 @@
+import type { FindingTemplate } from '../../constants';
+
+export const infoDisclosureTemplates: FindingTemplate[] = [
+    {
+        id: 'info-stack-trace',
+        title: 'Verbose Error Messages / Stack Trace Exposure',
+        category: 'Information Disclosure',
+        severity: 'Medium',
+        cwe: 'CWE-209',
+        cvss: '5.3',
+        owasp: 'A05:2021 Security Misconfiguration',
+        url: '/api/users/abc',
+        method: 'GET',
+        parameter: 'id',
+        tags: ['stack-trace', 'error', 'information-disclosure', 'debug'],
+        description: '<p>The application displays detailed technical error information in its HTTP responses when unexpected conditions occur. This includes full stack traces showing internal source code file paths, line numbers, function names, framework versions, database query details, and internal IP addresses.</p><p>This information is invaluable to attackers for reconnaissance, as it reveals the technology stack, application architecture, code structure, and potential vulnerability areas. Stack traces may also inadvertently expose sensitive data such as database connection strings, API keys, or user data processed during the failed operation.</p><p>Testing confirmed that triggering error conditions (e.g., malformed input, invalid URLs, database errors) produces verbose technical error responses.</p>',
+        impact: '<ul><li><strong>Technology Stack Disclosure:</strong> Framework names, versions, and internal architecture details are revealed.</li><li><strong>Code Path Disclosure:</strong> File paths and function names reveal the application\'s internal structure and potential attack points.</li><li><strong>Credential Leakage:</strong> Stack traces may include database connection strings, environment variables, or request parameters containing sensitive information.</li><li><strong>Targeted Attacks:</strong> Version information enables attackers to search for specific CVEs and develop targeted exploits.</li></ul>',
+        remediation: '<ol><li><strong>Custom Error Pages:</strong> Implement generic error pages for all HTTP error codes (400, 403, 404, 500) that display user-friendly messages without technical details.</li><li><strong>Server-Side Logging:</strong> Log detailed error information server-side using structured logging frameworks. Never expose stack traces in HTTP responses.</li><li><strong>Environment Configuration:</strong> Ensure production environments have debug mode disabled and error display settings configured for production.</li><li><strong>Error Handling Middleware:</strong> Implement global error handling middleware that catches all unhandled exceptions and returns standardized error responses.</li></ol>',
+        references: '<p><ul><li><a href="https://owasp.org/Top10/A05_2021-Security_Misconfiguration/">OWASP Top 10 - A05:2021</a></li><li><a href="https://cwe.mitre.org/data/definitions/209.html">CWE-209: Generation of Error Message Containing Sensitive Information</a></li></ul></p>',
+    },
+    {
+        id: 'info-version-disclosure',
+        title: 'Server/Technology Version Disclosure',
+        category: 'Information Disclosure',
+        severity: 'Low',
+        cwe: 'CWE-200',
+        cvss: '3.7',
+        owasp: 'A05:2021 Security Misconfiguration',
+        url: '/',
+        method: 'GET',
+        tags: ['version', 'disclosure', 'fingerprinting', 'server', 'headers'],
+        description: '<p>The server discloses software version information through HTTP response headers, HTML meta tags, or default error pages. Common disclosures include web server headers (<code>Server: Apache/2.4.41</code>, <code>X-Powered-By: PHP/7.4.3</code>), framework identifiers, and detailed version numbers.</p><p>While version disclosure alone is a low-severity finding, it significantly reduces the effort required for targeted attacks. Attackers can immediately cross-reference disclosed versions against vulnerability databases to identify applicable exploits.</p>',
+        impact: '<ul><li><strong>Targeted Attacks:</strong> Exact version numbers allow attackers to quickly identify applicable CVEs and available exploits.</li><li><strong>Reduced Attack Effort:</strong> Eliminates the need for blind vulnerability scanning, making targeted attacks more efficient.</li><li><strong>Technology Profiling:</strong> Reveals the technology stack for more sophisticated attack planning.</li></ul>',
+        remediation: '<ol><li><strong>Remove Server Headers:</strong> Configure web servers to suppress or obfuscate version information in the <code>Server</code> and <code>X-Powered-By</code> headers.</li><li><strong>Apache:</strong> Set <code>ServerTokens Prod</code> and <code>ServerSignature Off</code>.</li><li><strong>Nginx:</strong> Set <code>server_tokens off;</code>.</li><li><strong>Application Framework:</strong> Disable or remove <code>X-Powered-By</code> headers in application configuration (e.g., <code>app.disable(\'x-powered-by\')</code> in Express.js).</li><li><strong>Custom Error Pages:</strong> Replace default error pages that display server information with custom pages.</li></ol>',
+        references: '<p><ul><li><a href="https://owasp.org/Top10/A05_2021-Security_Misconfiguration/">OWASP Top 10 - A05:2021</a></li><li><a href="https://cwe.mitre.org/data/definitions/200.html">CWE-200: Exposure of Sensitive Information</a></li></ul></p>',
+    },
+];

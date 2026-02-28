@@ -1,0 +1,37 @@
+import type { FindingTemplate } from '../../constants';
+
+export const businessLogicTemplates: FindingTemplate[] = [
+    {
+        id: 'logic-race-condition',
+        title: 'Race Condition / Time-of-Check to Time-of-Use (TOCTOU)',
+        category: 'Business Logic',
+        severity: 'High',
+        cwe: 'CWE-362',
+        cvss: '7.5',
+        owasp: 'A04:2021 Insecure Design',
+        url: '/api/transfer',
+        method: 'POST',
+        tags: ['race-condition', 'toctou', 'concurrency', 'business-logic'],
+        description: '<p>The application performs a check (e.g., balance verification, inventory check, coupon validation) and then performs an action based on that check in separate, non-atomic steps. By sending multiple concurrent requests, an attacker can exploit the time window between the check and the action to bypass business logic constraints.</p><p>Common race condition scenarios include: using a single-use coupon multiple times by sending parallel redemption requests, transferring funds exceeding account balance, purchasing items that are out of stock, and bypassing rate limits on resource-intensive operations.</p><p>Testing confirmed that sending concurrent requests to the identified endpoint allowed bypassing business logic constraints that are properly enforced under sequential request processing.</p>',
+        impact: '<ul><li><strong>Financial Loss:</strong> Multiple unauthorized transactions, coupon abuse, and balance manipulation can result in direct financial damage.</li><li><strong>Business Rule Bypass:</strong> Constraints designed to maintain data integrity (inventory limits, usage quotas, voting restrictions) can be circumvented.</li><li><strong>Data Inconsistency:</strong> Concurrent modifications without proper locking can corrupt data state, leading to inconsistencies that are difficult to identify and resolve.</li></ul>',
+        remediation: '<ol><li><strong>Database-Level Locking:</strong> Use database transactions with appropriate isolation levels (SERIALIZABLE) or explicit row-level locks (SELECT FOR UPDATE) for critical operations.</li><li><strong>Atomic Operations:</strong> Combine check-and-act operations into single atomic database operations (e.g., <code>UPDATE balance SET amount = amount - @val WHERE amount >= @val</code>).</li><li><strong>Idempotency Keys:</strong> Require unique idempotency keys for state-changing requests to prevent duplicate processing.</li><li><strong>Optimistic Concurrency Control:</strong> Use version numbers or ETags to detect and reject concurrent modifications.</li><li><strong>Rate Limiting:</strong> Implement per-user rate limiting on sensitive endpoints to reduce the window of exploitation.</li></ol>',
+        references: '<p><ul><li><a href="https://owasp.org/Top10/A04_2021-Insecure_Design/">OWASP Top 10 - A04:2021 Insecure Design</a></li><li><a href="https://cwe.mitre.org/data/definitions/362.html">CWE-362: Concurrent Execution Using Shared Resource with Improper Synchronization</a></li><li><a href="https://portswigger.net/web-security/race-conditions">PortSwigger - Race Conditions</a></li></ul></p>',
+    },
+    {
+        id: 'logic-price-manipulation',
+        title: 'Price/Quantity Manipulation',
+        category: 'Business Logic',
+        severity: 'High',
+        cwe: 'CWE-472',
+        cvss: '8.1',
+        owasp: 'A04:2021 Insecure Design',
+        url: '/api/checkout',
+        method: 'POST',
+        parameter: 'price',
+        tags: ['price-manipulation', 'ecommerce', 'payment', 'business-logic'],
+        description: '<p>The application relies on client-side data for pricing, quantity, or discount calculations during the purchase or transaction flow. By intercepting and modifying HTTP requests, an attacker can alter the price, quantity, or total amount sent to the server, resulting in unauthorized discounts or free products.</p><p>Typical attack vectors include modifying hidden form fields, altering JSON payloads in API requests, replaying requests with modified values, and manipulating shopping cart parameters. The server accepts these client-controlled values without server-side recalculation or validation.</p><p>Testing confirmed that modifying price, quantity, or discount fields in purchase requests resulted in the server processing the transaction with the attacker-controlled values.</p>',
+        impact: '<ul><li><strong>Direct Financial Loss:</strong> Attackers can purchase products at reduced prices or zero cost.</li><li><strong>Inventory Fraud:</strong> Manipulated quantities can exhaust inventory without corresponding payment.</li><li><strong>Refund Abuse:</strong> Inflated prices on purchases followed by refund requests can generate profit for the attacker.</li></ul>',
+        remediation: '<ol><li><strong>Server-Side Price Calculation:</strong> All pricing, discounts, taxes, and totals must be calculated server-side using authoritative data from the product database. Never trust client-supplied prices.</li><li><strong>Price Verification:</strong> Compare the final transaction amount against the authoritative product catalog before processing payment.</li><li><strong>Signed Cart Tokens:</strong> Use cryptographically signed/encrypted cart tokens that prevent client-side tampering.</li><li><strong>Transaction Logging:</strong> Log all transaction details and implement automated alerts for anomalous pricing patterns.</li></ol>',
+        references: '<p><ul><li><a href="https://owasp.org/Top10/A04_2021-Insecure_Design/">OWASP Top 10 - A04:2021</a></li><li><a href="https://cwe.mitre.org/data/definitions/472.html">CWE-472: External Control of Assumed-Immutable Web Parameter</a></li></ul></p>',
+    },
+];

@@ -1,0 +1,35 @@
+import type { FindingTemplate } from '../../constants';
+
+export const apiTemplates: FindingTemplate[] = [
+    {
+        id: 'api-bola',
+        title: 'Broken Object Level Authorization (BOLA)',
+        category: 'API Security',
+        severity: 'High',
+        cwe: 'CWE-639',
+        cvss: '7.5',
+        owasp: 'API1:2023 BOLA',
+        url: '/api/v1/orders/1234',
+        method: 'GET',
+        parameter: 'order_id',
+        tags: ['api', 'bola', 'authorization', 'idor', 'rest'],
+        description: '<p>The API does not verify that the authenticated user is authorized to access the specific object referenced in the request. By manipulating object identifiers (IDs) in API requests, an attacker can access or modify other users\' resources. This is the API-specific manifestation of Insecure Direct Object Reference (IDOR).</p><p>BOLA is the #1 API security risk according to the OWASP API Security Top 10. It commonly affects endpoints like <code>GET /api/v1/users/{id}/orders</code>, <code>PUT /api/v1/documents/{id}</code>, and similar resource-oriented API patterns where the object ID is the sole access control mechanism.</p><p>Testing confirmed that authenticated API requests with manipulated resource IDs returned data or performed operations on resources belonging to other users.</p>',
+        impact: '<ul><li><strong>Unauthorized Data Access:</strong> Attackers can read any user\'s data by enumerating object IDs.</li><li><strong>Data Manipulation:</strong> Write operations on other users\' resources enable unauthorized modifications and deletions.</li><li><strong>Mass Data Extraction:</strong> Sequential or predictable IDs enable automated harvesting of all records.</li><li><strong>Regulatory Violations:</strong> Unauthorized personal data access violates GDPR, KVKK, and other privacy regulations.</li></ul>',
+        remediation: '<ol><li><strong>Object-Level Authorization:</strong> Implement authorization checks on every API endpoint that verifies the authenticated user owns or has explicit permission to access the requested resource.</li><li><strong>Authorization Middleware:</strong> Build reusable middleware that validates ownership before processing data operations.</li><li><strong>Use UUIDs:</strong> Replace sequential integer IDs with UUIDs (v4) to prevent enumeration.</li><li><strong>Automated Testing:</strong> Include authorization matrix testing in CI/CD pipelines using tools that test each endpoint with different user contexts.</li></ol>',
+        references: '<p><ul><li><a href="https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/">OWASP API Security - BOLA</a></li><li><a href="https://cwe.mitre.org/data/definitions/639.html">CWE-639: Authorization Bypass Through User-Controlled Key</a></li></ul></p>',
+    },
+    {
+        id: 'api-mass-assignment',
+        title: 'Mass Assignment / Excessive Data Exposure',
+        category: 'API Security',
+        severity: 'High',
+        cwe: 'CWE-915',
+        cvss: '7.5',
+        owasp: 'A01:2021 Broken Access Control',
+        tags: ['api', 'mass-assignment', 'over-posting', 'data-exposure'],
+        description: '<p>The API blindly binds client-supplied data to internal data models without filtering which properties may be modified by the user. This allows attackers to modify properties they should not have access to by including additional fields in the request body. For example, a user updating their profile could include <code>"role": "admin"</code> or <code>"isVerified": true</code> to escalate privileges.</p><p>This vulnerability often arises when ORMs or frameworks automatically map request data to database models. The API may also return more data than necessary in responses, exposing internal fields, private data, or sensitive system properties.</p><p>Testing confirmed that including additional, undocumented properties in API requests resulted in those properties being persisted, demonstrating insufficient input filtering.</p>',
+        impact: '<ul><li><strong>Privilege Escalation:</strong> Attackers can modify role, permission, or admin status fields to gain elevated access.</li><li><strong>Data Manipulation:</strong> Internal fields like verified status, credit balance, pricing, or account flags can be modified.</li><li><strong>Business Logic Bypass:</strong> Workflow states, approval statuses, and other business-critical flags can be altered directly.</li></ul>',
+        remediation: '<ol><li><strong>Allowlist Properties:</strong> Explicitly define which properties can be set by the client for each endpoint. Use DTOs (Data Transfer Objects) or request schemas that only accept permitted fields.</li><li><strong>Separate Read/Write Models:</strong> Use different data models for request input and response output. Never expose internal model properties directly.</li><li><strong>Framework Protections:</strong> Use framework-specific mass assignment protections (e.g., <code>$fillable</code> in Laravel, <code>attr_accessible</code> in Rails, <code>@JsonIgnoreProperties</code> in Spring).</li><li><strong>Response Filtering:</strong> Explicitly select which fields to include in API responses. Never return full database records to clients.</li></ol>',
+        references: '<p><ul><li><a href="https://owasp.org/API-Security/editions/2023/en/0xa3-broken-object-property-level-authorization/">OWASP API Security - Broken Object Property Level Authorization</a></li><li><a href="https://cwe.mitre.org/data/definitions/915.html">CWE-915: Improperly Controlled Modification of Dynamically-Determined Object Attributes</a></li></ul></p>',
+    },
+];

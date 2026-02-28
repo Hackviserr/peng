@@ -1,0 +1,364 @@
+@import "tailwindcss";
+
+/* Global: pointer cursor for all interactive elements */
+button,
+select,
+[role="button"],
+summary,
+input[type="checkbox"],
+input[type="radio"] {
+    cursor: pointer;
+}
+
+/* Tiptap paragraph spacing */
+.tiptap p {
+    margin-bottom: 0.75em;
+}
+
+.tiptap p:last-child {
+    margin-bottom: 0;
+}
+
+/* Tiptap list spacing */
+.tiptap ul,
+.tiptap ol {
+    margin-bottom: 0.75em;
+    padding-left: 1.5em;
+}
+
+.tiptap ul {
+    list-style-type: disc;
+}
+
+.tiptap ol {
+    list-style-type: decimal;
+}
+
+.tiptap li {
+    margin-bottom: 0.25em;
+}
+
+.tiptap li p {
+    margin-bottom: 0.25em;
+}
+
+.tiptap li:last-child {
+    margin-bottom: 0;
+}
+
+/* Tiptap link styling */
+.tiptap a {
+    color: #34d399;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    transition: color 0.15s;
+}
+
+.tiptap a:hover {
+    color: #6ee7b7;
+}
+
+/* ====== Report Prose Styles ====== */
+.report-prose p {
+    margin-bottom: 0.6em;
+}
+
+.report-prose p:last-child {
+    margin-bottom: 0;
+}
+
+.report-prose ul {
+    list-style-type: disc;
+    padding-left: 1.5em;
+    margin-bottom: 0.6em;
+}
+
+.report-prose ol {
+    list-style-type: decimal;
+    padding-left: 1.5em;
+    margin-bottom: 0.6em;
+}
+
+.report-prose li {
+    margin-bottom: 0.2em;
+}
+
+.report-prose a {
+    color: #2563eb;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.report-prose strong {
+    font-weight: 700;
+}
+
+.report-prose code {
+    background: #f4f4f5;
+    padding: 0.15em 0.4em;
+    border-radius: 0.25em;
+    font-size: 0.85em;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.report-prose pre {
+    background: #f4f4f5;
+    border: 1px solid #e4e4e7;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    margin: 0.5em 0;
+    overflow-x: auto;
+    font-size: 0.8em;
+}
+
+/* Print: show link URLs after anchor text */
+@media print {
+    .report-prose a[href]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.75em;
+        color: #6b7280;
+        word-break: break-all;
+    }
+}
+
+/* ====== Template Preview Styles ====== */
+.template-preview-prose p {
+    margin-bottom: 0.6em;
+}
+
+.template-preview-prose p:last-child {
+    margin-bottom: 0;
+}
+
+.template-preview-prose ul {
+    list-style-type: disc;
+    padding-left: 1.5em;
+    margin-bottom: 0.6em;
+}
+
+.template-preview-prose ol {
+    list-style-type: decimal;
+    padding-left: 1.5em;
+    margin-bottom: 0.6em;
+}
+
+.template-preview-prose li {
+    margin-bottom: 0.2em;
+}
+
+.template-preview-prose a {
+    color: #34d399;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.template-preview-prose a:hover {
+    color: #6ee7b7;
+}
+
+.template-preview-prose strong {
+    color: #e4e4e7;
+    font-weight: 600;
+}
+
+.template-preview-prose code {
+    background: rgba(63, 63, 70, 0.5);
+    color: #a1a1aa;
+    padding: 0.15em 0.4em;
+    border-radius: 0.25em;
+    font-size: 0.85em;
+}
+
+/* Tiptap Placeholder plugin needs CSS to display */
+.tiptap p.is-editor-empty:first-child::before {
+    color: #3f3f46;
+    /* zinc-700 */
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+}
+
+/* Code block styling */
+.tiptap pre {
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 0.75rem 0;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.tiptap pre code {
+    color: #d4d4d8;
+    background: none;
+    padding: 0;
+    font-size: inherit;
+}
+
+/* Lowlight syntax tokens */
+.hljs-keyword,
+.hljs-selector-tag {
+    color: #c084fc;
+}
+
+.hljs-string,
+.hljs-attr {
+    color: #86efac;
+}
+
+.hljs-number,
+.hljs-literal {
+    color: #fbbf24;
+}
+
+.hljs-comment {
+    color: #52525b;
+    font-style: italic;
+}
+
+.hljs-built_in,
+.hljs-type {
+    color: #67e8f9;
+}
+
+.hljs-title,
+.hljs-function {
+    color: #60a5fa;
+}
+
+.hljs-tag {
+    color: #f87171;
+}
+
+.hljs-attribute {
+    color: #fbbf24;
+}
+
+.hljs-symbol {
+    color: #a78bfa;
+}
+
+/* ====== Report Print Styles ====== */
+
+/* Report preview: A4-like white container */
+.report-preview {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.report-preview pre {
+    background: #f4f4f5 !important;
+    border: 1px solid #e4e4e7 !important;
+    color: #18181b !important;
+}
+
+.report-preview pre code {
+    color: #18181b !important;
+}
+
+/* When printing from report preview */
+@media print {
+    @page {
+        size: A4;
+        margin: 18mm 15mm;
+    }
+
+    /* Force background colors and images in print */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Hide everything except report content */
+    body.report-printing>* {
+        display: none !important;
+    }
+
+    /* Make the full overlay chain visible and unstyled */
+    body.report-printing>div:has(.report-preview) {
+        display: block !important;
+        position: static !important;
+        overflow: visible !important;
+        height: auto !important;
+        background: none !important;
+    }
+
+    /* Unset overflow and flex on ALL containers in the chain */
+    body.report-printing>div:has(.report-preview) * {
+        overflow: visible !important;
+        position: static !important;
+    }
+
+    body.report-printing .report-toolbar {
+        display: none !important;
+    }
+
+    body.report-printing .report-preview {
+        display: block !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        background: white !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    /* Page breaks */
+    .report-page {
+        page-break-after: always;
+    }
+
+    .report-page:last-child {
+        page-break-after: auto;
+    }
+
+    .report-no-break {
+        page-break-inside: avoid;
+    }
+
+    /* Typography */
+    .report-document {
+        font-size: 11pt;
+        line-height: 1.5;
+        color: #000;
+    }
+
+    .report-document h2 {
+        font-size: 18pt;
+    }
+
+    .report-document h3 {
+        font-size: 14pt;
+    }
+
+    .report-document h4 {
+        font-size: 12pt;
+    }
+
+    /* Prose resets for print */
+    .report-document .prose {
+        color: #000;
+        max-width: none;
+    }
+
+    .report-document .prose pre {
+        background: #f5f5f5 !important;
+        border: 1px solid #d4d4d8 !important;
+        color: #000 !important;
+    }
+
+    .report-document .prose code {
+        color: #000 !important;
+        background: #f5f5f5 !important;
+    }
+
+    .report-document .prose img {
+        max-width: 100%;
+        page-break-inside: avoid;
+    }
+}

@@ -1,0 +1,36 @@
+import type { FindingTemplate } from '../../constants';
+
+export const networkTemplates: FindingTemplate[] = [
+    {
+        id: 'net-open-ports',
+        title: 'Unnecessary Open Ports and Services',
+        category: 'Network & Infrastructure',
+        severity: 'Medium',
+        cwe: 'CWE-284',
+        cvss: '5.3',
+        owasp: 'A05:2021 Security Misconfiguration',
+        affectedHost: '10.0.0.1',
+        port: '445',
+        tags: ['firewall', 'open-ports', 'network', 'services', 'nmap', 'hardening'],
+        description: '<p>Network scanning identified ports and services running on the target host that are not required for the application\'s intended functionality. Each open port represents a potential attack vector, especially when running outdated software or services with known vulnerabilities.</p><p>Commonly found unnecessary services include database ports exposed to the internet (MySQL 3306, PostgreSQL 5432, MongoDB 27017), development tools (Redis 6379), management interfaces (SSH 22, RDP 3389), and legacy services (FTP 21, Telnet 23).</p><p>Testing using port scanning tools (Nmap, Masscan) identified services that should not be publicly accessible based on the application\'s stated requirements and architecture.</p>',
+        impact: '<ul><li><strong>Expanded Attack Surface:</strong> Each unnecessary service is a potential target for exploitation, especially if running outdated versions with known CVEs.</li><li><strong>Data Exposure:</strong> Databases, caches, and message queues exposed to the internet may allow unauthorized data access.</li><li><strong>Brute Force Attacks:</strong> Management services like SSH and RDP are frequent targets for credential brute force attacks.</li><li><strong>Lateral Movement:</strong> Compromised services can be used as pivot points for further network exploration and attacks.</li></ul>',
+        remediation: '<ol><li><strong>Firewall Configuration:</strong> Implement firewall rules to block all inbound traffic by default, only allowing access to ports required for the application (typically 80/443 for web applications).</li><li><strong>Service Audit:</strong> Disable or uninstall all unnecessary services on production servers.</li><li><strong>Network Segmentation:</strong> Place databases, caches, and internal services on private networks inaccessible from the internet.</li><li><strong>VPN/Bastion Host:</strong> Restrict administrative access (SSH, RDP) to VPN connections or bastion hosts.</li><li><strong>Regular Scanning:</strong> Schedule regular port scans of external-facing infrastructure to detect newly exposed services.</li></ol>',
+        references: '<p><ul><li><a href="https://owasp.org/Top10/A05_2021-Security_Misconfiguration/">OWASP Top 10 - A05:2021</a></li><li><a href="https://cwe.mitre.org/data/definitions/284.html">CWE-284: Improper Access Control</a></li><li><a href="https://www.cisecurity.org/cis-benchmarks">CIS Benchmarks</a></li></ul></p>',
+    },
+    {
+        id: 'net-outdated-software',
+        title: 'Outdated Software with Known Vulnerabilities',
+        category: 'Network & Infrastructure',
+        severity: 'High',
+        cwe: 'CWE-1104',
+        cvss: '7.5',
+        owasp: 'A06:2021 Vulnerable and Outdated Components',
+        affectedHost: '10.0.0.1',
+        port: '80',
+        tags: ['outdated', 'software', 'cve', 'patching', 'vulnerability'],
+        description: '<p>The target system is running software components with publicly known security vulnerabilities (CVEs). This includes outdated versions of operating systems, web servers, application frameworks, libraries, and runtime environments.</p><p>Publicly disclosed vulnerabilities in popular software are routinely exploited by automated scanning tools and botnets within hours of public disclosure. The National Vulnerability Database (NVD) and vendor advisories provide detailed exploitation information that attackers use to develop exploits.</p><p>Testing identified the following outdated components with known vulnerabilities through version fingerprinting and banner analysis.</p>',
+        impact: '<ul><li><strong>Known Exploit Availability:</strong> Public exploits and Metasploit modules may be available for identified CVEs, enabling automated exploitation.</li><li><strong>Full System Compromise:</strong> Many CVEs in server software lead to Remote Code Execution, granting full control of the affected system.</li><li><strong>Data Breach:</strong> Exploitable vulnerabilities in web servers and frameworks can expose application data and user information.</li><li><strong>Compliance Violations:</strong> Running unpatched software with known vulnerabilities violates PCI-DSS requirement 6.2, ISO 27001, and most security compliance frameworks.</li></ul>',
+        remediation: '<ol><li><strong>Patch Immediately:</strong> Update all identified software components to their latest stable versions that address the known vulnerabilities.</li><li><strong>Patch Management Policy:</strong> Establish a formal patch management policy with defined SLAs: critical patches within 48 hours, high within 7 days, medium within 30 days.</li><li><strong>Automated Updates:</strong> Where possible, enable automated security updates for operating systems and runtime environments.</li><li><strong>Dependency Scanning:</strong> Integrate Software Composition Analysis (SCA) tools like Dependabot, Snyk, or Trivy into CI/CD pipelines to detect vulnerable dependencies.</li><li><strong>End-of-Life Planning:</strong> Track software end-of-life dates and plan migrations before support ends.</li></ol>',
+        references: '<p><ul><li><a href="https://owasp.org/Top10/A06_2021-Vulnerable_and_Outdated_Components/">OWASP Top 10 - A06:2021</a></li><li><a href="https://cwe.mitre.org/data/definitions/1104.html">CWE-1104: Use of Unmaintained Third Party Components</a></li><li><a href="https://nvd.nist.gov/">National Vulnerability Database (NVD)</a></li></ul></p>',
+    },
+];
